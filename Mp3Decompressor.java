@@ -1,20 +1,29 @@
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 
 public class Mp3Decompressor {
     static void decompress(String filename) {
-        //TODO det er en bitstream, ikke bytes. dumbass
+        int numberOfBytes = 32;
+        byte[] bytearray = new byte[numberOfBytes];
         try {
-            Path path = Paths.get(filename);
-            byte[] data = Files.readAllBytes(path);
-            System.out.println(data);
-
-            String thing = Base64.getEncoder().encodeToString(data);
-            System.out.println("Thing: " + thing);
+            FileInputStream fileInputStream = new FileInputStream(filename);
+            fileInputStream.read(bytearray, 0, numberOfBytes);
+            fileInputStream.close();
         } catch (Exception e) {
             System.out.println("File not found");
+        }
+        
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytearray);
+        //TODO hardkodet, fiks det
+        for(int i = 0; i < numberOfBytes; i++) {
+            int c;
+            while((c = byteArrayInputStream.read()) != -1) {
+                if(i == 0) {
+                    System.out.print((char) c);
+                } else {
+                    System.out.print(Character.toUpperCase((char) c));
+                }
+            }
         }
     }
 }
